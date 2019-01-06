@@ -50,10 +50,11 @@ def train(N, features, hidden_layer, output_dim, epochs, l_rate, a_func, dropout
         l1_out = a_func(l1)
         # Apply dropout to turn off part of the hidden layer
         # and compensate the turned off by increase others
-        l1_out *= np.random.binomial(
-            [np.ones((len(data), hidden_layer))],
-            1 - dropout_percent)[0] * (1.0 / (1 - dropout_percent)
-                                       )
+        if dropout_percent < 1:
+            l1_out *= np.random.binomial(
+                [np.ones((len(data), hidden_layer))],
+                1 - dropout_percent)[0] * (1.0 / (1 - dropout_percent)
+                                           )
         l2 = l1_out.dot(w2)
         y_pred = a_func(l2)
 
@@ -75,4 +76,4 @@ def train(N, features, hidden_layer, output_dim, epochs, l_rate, a_func, dropout
 
 
 if __name__ == '__main__':
-    train(64, 1000, 100, 10, 5000, 1, a_func=sigmoid, dropout_percent=0.5)
+    train(64, 1000, 100, 10, 500, 1e-6, a_func=relu, dropout_percent=1)
